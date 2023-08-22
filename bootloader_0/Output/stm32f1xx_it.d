@@ -57,3 +57,4 @@
 ..\output\stm32f1xx_it.o: ..\User\stm32f1xx_it.h
 ..\output\stm32f1xx_it.o: ..\User\./usart/bsp_debug_usart.h
 ..\output\stm32f1xx_it.o: D:\Workingpaper\Keil MDK\ARM\ARMCC\Bin\..\include\stdio.h
+..\output\stm32f1xx_it.o: D:\Workingpaper\Keil MDK\ARM\ARMCC\Bin\..\include\stdlib.h

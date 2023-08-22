@@ -38,8 +38,6 @@ int main(void)
 	/*调用printf函数，因为重定向了fputc，printf的内容会输出到串口*/
 	printf("欢迎使用野火开发板\n");	
 
-	/*自定义函数方式*/
-	Usart_SendString( (uint8_t *)"自定义函数输出：这是一个串口中断接收回显实验\n" );
 	
   while(1)
 	{		

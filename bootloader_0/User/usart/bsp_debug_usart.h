@@ -3,12 +3,16 @@
 
 #include "stm32f1xx.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 //串口波特率
 #define DEBUG_USART_BAUDRATE                    115200
-#define USART_RX_DATA_SIZE  2048
-#define USART_RX_DATA_SINGAL_MAX    48
-#define NUM 5
+
+#define USART_RX_DATA_SIZE                      2048
+#define USART_RX_DATA_SINGAL_MAX                256
+#define NUM                                     10
+
+
 
 typedef struct _USART_RxBuffPtr_
 {
@@ -24,6 +28,8 @@ typedef struct _USART_RxControl_
     USART_RxBuffPtr *OUT;
     USART_RxBuffPtr *END;
 }USART_RxControl;
+
+
 
 
 //引脚定义    串口
@@ -57,4 +63,9 @@ void DEBUG_USART_Config(void);
 int fputc(int ch, FILE *f);
 int fgetc(FILE *f);
 extern UART_HandleTypeDef UartHandle;
+extern DMA_HandleTypeDef DMA_Handle;
+extern uint8_t DMA_Rx_databuffer[USART_RX_DATA_SINGAL_MAX]; 
+extern USART_RxControl *USART_RxCU; 
+HAL_StatusTypeDef DMA_init(void);
+//USART_RxControl *USART_Rxdata_control_init(void);
 #endif /* __USART1_H */

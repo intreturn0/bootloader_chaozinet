@@ -39,6 +39,7 @@
 #include "main.h"
 #include "stm32f1xx_it.h"
 #include "./usart/bsp_debug_usart.h"
+#include "stm32f1xx_hal.h"
 
 /** @addtogroup STM32F4xx_HAL_Examples
   * @{
@@ -189,6 +190,35 @@ void  DEBUG_USART_IRQHandler(void)
 	}
 }
 */
+
+void  DEBUG_USART_IRQHandler(void)
+{
+  if(__HAL_UART_GET_FLAG( &UartHandle, UART_FLAG_IDLE ) != RESET)
+  {
+    //(uint16_t)READ_REG(UartHandle.Instance->DR);
+    USART_RxCU->rx_count += (USART_RX_DATA_SINGAL_MAX + 1) - __HAL_DMA_GET_COUNTER(&DMA_Handle);
+    USART_RxCU->IN->end = &DMA_Rx_databuffer[USART_RxCU->rx_count - 1];
+    USART_RxCU->IN++; 
+    if(USART_RxCU->IN == USART_RxCU->END)
+    {
+      USART_RxCU->IN = &USART_RxCU->rx_dataBuff[0];
+    }
+    if(USART_RX_DATA_SIZE - USART_RxCU->rx_count >= USART_RX_DATA_SINGAL_MAX)
+    {
+      USART_RxCU->IN->start = &DMA_Rx_databuffer[USART_RxCU->rx_count];
+    }
+    else
+    {
+			USART_RxCU->IN->start = DMA_Rx_databuffer;
+      USART_RxCU->rx_count = 0;
+    }
+    
+		
+
+  }
+}
+
+
 /**
   * @brief  This function handles PPP interrupt request.
   * @param  None

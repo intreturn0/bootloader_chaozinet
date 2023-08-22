@@ -56,4 +56,5 @@
 ..\output\main.o: ..\Libraries\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h
 ..\output\main.o: ..\User\./usart/bsp_debug_usart.h
 ..\output\main.o: D:\Workingpaper\Keil MDK\ARM\ARMCC\Bin\..\include\stdio.h
+..\output\main.o: D:\Workingpaper\Keil MDK\ARM\ARMCC\Bin\..\include\stdlib.h
 ..\output\main.o: ..\User\./led/bsp_led.h

@@ -18,7 +18,26 @@
 #include "./usart/bsp_debug_usart.h"
 
 UART_HandleTypeDef UartHandle;
+DMA_HandleTypeDef DMA_Handle;
+
+uint8_t DMA_Rx_databuffer[USART_RX_DATA_SINGAL_MAX]; 
+USART_RxControl *USART_RxCU;
 //extern uint8_t ucTemp;  
+
+/*接收消息结构体*/
+static USART_RxControl *USART_Rxdata_control_init(void)
+{
+  USART_RxControl *self = (USART_RxControl *)malloc(sizeof(USART_RxControl));
+
+  self->rx_count = 0;
+//  / self->rx_dataBuff = DMA_Rx_databuffer;
+  self->IN = &self->rx_dataBuff[0];
+  self->OUT = &self->rx_dataBuff[0];
+  self->END =&self->rx_dataBuff[NUM-1];
+  self->IN->start = DMA_Rx_databuffer;
+
+  return self;
+}
 
  /**
   * @brief  DEBUG_USART GPIO 配置,工作模式配置。115200 8-N-1
@@ -77,17 +96,15 @@ void HAL_UART_MspInit(UART_HandleTypeDef *huart)
    //抢占优先级0，子优先级1
   HAL_NVIC_SetPriority(DEBUG_USART_IRQ ,0,1);	
 	 //使能USART1中断通道  
-  HAL_NVIC_EnableIRQ(DEBUG_USART_IRQ );		   
+  HAL_NVIC_EnableIRQ(DEBUG_USART_IRQ );
+	USART_RxCU = USART_Rxdata_control_init();
+
 }
 
 
-uint8_t DMA_Rx_databuffer[USART_RX_DATA_SINGAL_MAX];
-
+//DMA初始化函数
 HAL_StatusTypeDef DMA_init(void)
 {
-
-  DMA_HandleTypeDef DMA_Handle;
-
   DMA_CLK_FUNC_ENABLE();
 
   DMA_Handle.Instance = DMA_CHANNEL;
@@ -106,12 +123,16 @@ HAL_StatusTypeDef DMA_init(void)
     return HAL_ERROR;
   }
   HAL_DMA_Start(&DMA_Handle,(uint32_t)&(DEBUG_USART->DR),(uint32_t)&(DMA_Rx_databuffer),sizeof(DMA_Rx_databuffer));
+  
 
   return HAL_OK;
 }
 
 
 
+
+/********************************************************/
+/********************************************************/
 /*****************  发送字符串 **********************/
 void Usart_SendString(uint8_t *str)
 {
